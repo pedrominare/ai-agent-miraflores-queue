@@ -77,7 +77,6 @@ O projeto foi desenvolvido para atuar como **backend de processamento assíncron
 | **FastAPI** | Framework moderno, tipado, documentação automática (Swagger). |
 | **Redis como fila** | Simples, local, sem dependência de SQS. Uso de LPUSH/BRPOP (FIFO). |
 | **MySQL** | Banco relacional já disponível no servidor; jobs precisam de persistência. |
-| **Sem Nginx** | Consumidor exclusivo é o Lambda do próprio desenvolvedor; simplicidade. |
 | **Worker separado** | Processamento assíncrono; API responde rápido sem bloquear. |
 
 ### Banco de dados: ai_agent_miraflores
@@ -171,83 +170,17 @@ Ai-Agent/
 
 ### Pré-requisitos
 
-- Python 3.10+
+- Python 3.14
 - Redis instalado e em execução
 - MySQL instalado e em execução
-
-### Passos
-
-```bash
-# 1. Clonar ou acessar o projeto
-cd Ai-Agent
-
-# 2. Criar ambiente virtual
-python -m venv venv
-
-# Linux/macOS:
-source venv/bin/activate
-
-# Windows:
-venv\Scripts\activate
-
-# 3. Instalar dependências
-pip install -r requirements.txt
-
-# 4. Configurar variáveis de ambiente
-cp .env.example .env
-# Editar .env com: MYSQL_PASSWORD, MYSQL_USER, REDIS_HOST, etc.
-
-# 5. Criar banco e tabela no MySQL
-mysql -u root -p < scripts/init_db.sql
-# Ou executar o conteúdo de scripts/init_db.sql no cliente MySQL
-```
-
-### Variáveis de ambiente (.env)
-
-| Variável | Descrição | Sensível |
-|----------|-----------|----------|
-| `REDIS_HOST` | Host do Redis | Não |
-| `REDIS_PORT` | Porta do Redis | Não |
-| `REDIS_QUEUE_NAME` | Nome da fila | Não |
-| `MYSQL_HOST` | Host do MySQL | Não |
-| `MYSQL_PORT` | Porta do MySQL | Não |
-| `MYSQL_USER` | Usuário MySQL | Sim |
-| `MYSQL_PASSWORD` | Senha MySQL | **Sim** |
-| `MYSQL_DATABASE` | Nome do banco | Não |
-| `API_KEY` | Chave para autenticação (opcional) | **Sim** |
-
----
 
 ## Segurança e GitHub Secrets
 
 **Nenhuma variável sensível fica no código.** O projeto usa `os.getenv()` para ler configurações; os valores vêm de ambiente ou arquivo `.env` (gitignored).
 
-### Para repositório público no GitHub
-
-1. **Nunca commite o arquivo `.env`** — ele está no `.gitignore`.
-2. **Use GitHub Secrets** para todos os valores sensíveis:
-   - Acesse o repositório no GitHub
-   - **Settings** → **Secrets and variables** → **Actions**
-   - **New repository secret** para cada variável abaixo
-
-### Lista completa de GitHub Secrets
+### GitHub Secrets
 
 Configure todos os secrets para o workflow de deploy funcionar:
-
-| Secret | Obrigatório | Descrição |
-|--------|-------------|-----------|
-| `MYSQL_HOST` | Sim | IP privado do servidor onde o MySQL está instalado |
-| `MYSQL_PORT` | Sim | Porta do MySQL (ex: `3306`) |
-| `MYSQL_USER` | Sim | Usuário do banco |
-| `MYSQL_PASSWORD` | Sim | Senha do banco |
-| `MYSQL_DATABASE` | Sim | Nome do banco (`ai_agent_miraflores`) |
-| `REDIS_HOST` | Sim | IP do Redis (localhost ou IP privado se em outro servidor) |
-| `REDIS_PORT` | Sim | Porta do Redis (ex: `6379`) |
-| `API_KEY` | Não | Chave compartilhada com o Lambda (deixe vazio se não usar) |
-| `DEPLOY_HOST` | Sim | IP ou hostname do servidor onde a API roda |
-| `DEPLOY_USER` | Sim | Usuário SSH para deploy |
-| `DEPLOY_SSH_KEY` | Sim | Chave privada SSH (conteúdo completo do arquivo) |
-| `DEPLOY_PATH` | Sim | Caminho do projeto no servidor (ex: `/home/usuario/Ai-Agent`) |
 
 ### Como o deploy funciona
 
@@ -259,24 +192,6 @@ O workflow `.github/workflows/deploy.yml` executa **automaticamente em cada push
 
 **Primeira vez:** crie o diretório no servidor (ex: `mkdir -p /home/usuario/Ai-Agent`) ou use um path existente. O rsync criará o conteúdo.
 
-### Desenvolvimento local
-
-Copie `.env.example` para `.env`, preencha os valores (incluindo o IP privado do MySQL em `MYSQL_HOST`) e nunca commite o `.env`.
-
----
-
-### Executando localmente
-
-```bash
-# Terminal 1: API
-python run_api.py
-# API em http://0.0.0.0:8000
-
-# Terminal 2: Worker
-python run_worker.py
-```
-
----
 
 ## Endpoints da API
 
