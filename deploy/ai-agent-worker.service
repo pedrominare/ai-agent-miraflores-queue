@@ -1,0 +1,24 @@
+# deploy/ai-agent-worker.service - Systemd para Worker
+# ====================================================
+# 1. Copiar: sudo cp deploy/ai-agent-worker.service /etc/systemd/system/
+# 2. Editar: substitua seu_usuario e /caminho/para/Ai-Agent
+# 3. Exemplo: User=ubuntu, WorkingDirectory=/home/ubuntu/Ai-Agent
+# Ver DEPLOY.md para guia completo.
+
+[Unit]
+Description=AI Agent Worker (Redis consumer)
+After=network.target redis-server.service mysql.service
+
+[Service]
+Type=simple
+User=seu_usuario
+WorkingDirectory=/caminho/para/Ai-Agent
+Environment="PATH=/caminho/para/Ai-Agent/venv/bin"
+ExecStart=/caminho/para/Ai-Agent/venv/bin/python run_worker.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+# ====================================================

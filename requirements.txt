@@ -1,0 +1,12 @@
+# FastAPI e servidor
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+
+# Banco de dados
+mysql-connector-python==8.3.0
+
+# Redis
+redis==5.0.1
+
+# Variáveis de ambiente
+python-dotenv==1.0.1

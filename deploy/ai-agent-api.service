@@ -1,0 +1,24 @@
+# deploy/ai-agent-api.service - Systemd para API
+# =============================================
+# 1. Copiar: sudo cp deploy/ai-agent-api.service /etc/systemd/system/
+# 2. Editar: substitua seu_usuario e /caminho/para/Ai-Agent
+# 3. Exemplo: User=ubuntu, WorkingDirectory=/home/ubuntu/Ai-Agent
+# Ver DEPLOY.md para guia completo.
+
+[Unit]
+Description=AI Agent API (FastAPI)
+After=network.target redis-server.service mysql.service
+
+[Service]
+Type=simple
+User=seu_usuario
+WorkingDirectory=/caminho/para/Ai-Agent
+Environment="PATH=/caminho/para/Ai-Agent/venv/bin"
+ExecStart=/caminho/para/Ai-Agent/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+# =============================================
