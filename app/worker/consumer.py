@@ -1,30 +1,16 @@
 # app/worker/consumer.py - Consumidor da fila Redis
 # ==================================================
-# Processa mensagens da fila. Ponto de integração futuro para o agente de IA.
+# Apenas orquestra: consome fila, chama processar_mensagem(), atualiza status.
+# Toda a lógica pesada fica em app/processors/.
 
 import time
 import logging
 from app.queue.redis_client import get_redis, get_queue_name
-from app.db.models import get_job, update_job_status
+from app.db.models import update_job_status
+from app.processors import processar_mensagem
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def processar_mensagem(id_job: str) -> str:
-    """
-    Processa a mensagem do job.
-    TODO: Integrar agente de IA aqui. Por ora, retorna resposta simulada.
-    """
-    job = get_job(id_job)
-    if not job:
-        logger.warning(f"Job {id_job} não encontrado no banco")
-        return ""
-
-    mensagem = job["mensagem"]
-    # Placeholder: resposta simulada. Substituir pela chamada ao agente de IA.
-    resposta = f"Recebi sua mensagem: '{mensagem}'. (Resposta simulada - agente de IA será integrado aqui)"
-    return resposta
 
 
 def run_worker():
