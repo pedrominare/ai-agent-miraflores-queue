@@ -3,7 +3,7 @@
 # ================================================================================
 # Uso: ./scripts/run_debug.sh   (ou bash scripts/run_debug.sh)
 # Pare os serviços systemd antes: sudo systemctl stop ai-agent-api ai-agent-worker
-# ================================================================================
+# ===============================================================================
 
 # Diretório do script e do projeto
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
