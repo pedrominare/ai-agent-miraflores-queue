@@ -28,7 +28,7 @@ def processar_cock_ascii(id_job: str) -> str:
     # Simula algum processamento "pesado"
     time.sleep(2)
 
-    resposta = pica
+    resposta = "8=====D~~~~"
     return resposta
 
 # ========================================================================
