@@ -7,10 +7,29 @@ import time
 import logging
 from app.queue.redis_client import get_redis, get_queue_name
 from app.db.models import update_job_status
-from app.processors import processar_mensagem
+from app.processors.mensagem import processar_mensagem
+from app.processors.cock_ascii import processar_cock_ascii
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+PROCESSORS = {
+    "mensagem": processar_mensagem,
+    "cock_ascii": processar_cock_ascii,
+}
+
+
+def _parse_payload(raw_payload: str) -> tuple[str, str]:
+    """
+    Decodifica o payload vindo da fila.
+    Formato esperado: "<processor>:<id_job>".
+    Mantém compatibilidade com payloads antigos contendo apenas o id_job.
+    """
+    if ":" not in raw_payload:
+        return "mensagem", raw_payload
+    processor, id_job = raw_payload.split(":", 1)
+    return processor or "mensagem", id_job
 
 
 def run_worker():
@@ -27,12 +46,14 @@ def run_worker():
             if result is None:
                 continue
 
-            _, id_job = result
-            logger.info(f"Processando job {id_job}")
+            _, raw_payload = result
+            processor_name, id_job = _parse_payload(raw_payload)
+            logger.info(f"Processando job {id_job} com processor '{processor_name}'")
 
             try:
                 update_job_status(id_job, "processing")
-                resposta = processar_mensagem(id_job)
+                processor_fn = PROCESSORS.get(processor_name, processar_mensagem)
+                resposta = processor_fn(id_job)
                 update_job_status(id_job, "completed", resposta=resposta)
                 logger.info(f"Job {id_job} concluído")
             except Exception as e:
