@@ -52,9 +52,9 @@ def processar_mensagem(id_job: str) -> str:
     time.sleep(3)
 
     if resultado_calc:
-        resposta = f"Olá, eu recebi e fiz uma conta louca aqui? Sua mensagem: '{mensagem}'. Resultado: {resultado_calc}"
+        resposta = f"Olá, eu recebi e fiz uma conta louca aqui! Sua mensagem: '{mensagem}'. Resultado: {resultado_calc}"
     else:
-        resposta = f"Olá, eu recebi e fiz uma conta louca aqui? Sua mensagem: '{mensagem}'. (Não achei conta no formato 'X op Y', ex: 2 + 3)"
+        resposta = f"Olá, eu recebi e fiz uma conta louca aqui! Sua mensagem: '{mensagem}'. (Não achei conta no formato 'X op Y', ex: 2 + 3)"
     return resposta
 
 # ============================================================================
