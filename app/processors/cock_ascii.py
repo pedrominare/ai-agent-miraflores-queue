@@ -7,7 +7,6 @@
 import time
 import logging
 from app.db.models import get_job
-from app.processors import pica
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
