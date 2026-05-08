@@ -8,7 +8,7 @@ import logging
 from app.queue.redis_client import get_redis, get_queue_name
 from app.db.models import update_job_status
 from app.processors.mensagem import processar_mensagem
-from app.processors.cock_ascii import processar_cock_ascii
+from app.processors.example import processar_example
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 PROCESSORS = {
     "mensagem": processar_mensagem,
-    "cock_ascii": processar_cock_ascii,
+    "example": processar_example,
 }
 
 
