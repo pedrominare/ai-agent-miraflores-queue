@@ -4,12 +4,12 @@
 from pydantic import BaseModel, Field
 
 
-class CockAsciiInput(BaseModel):
+class ExampleInput(BaseModel):
     """Payload recebido do Lambda."""
     mensagem: str = Field(..., min_length=1, max_length=10000)
 
 
-class CockAsciiResponse(BaseModel):
+class ExampleResponse(BaseModel):
     """Resposta ao Lambda após criar o job."""
     id_job: str
     status: str = "pending"
