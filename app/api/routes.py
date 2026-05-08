@@ -1,7 +1,7 @@
 # app/api/routes.py - Endpoints da API
 # ====================================
 
-from app.schemas.cock_ascii import CockAsciiInput, CockAsciiResponse
+from app.schemas.example import ExampleInput, ExampleResponse
 from fastapi import APIRouter, HTTPException, Header, Depends
 
 from app.schemas.mensagem import MensagemInput, MensagemResponse, JobStatusResponse
@@ -19,7 +19,6 @@ def verify_api_key(x_api_key: str | None = Header(None)):
     return True
 
 
-# BEGIN CHANGE: enfileirar jobs com processor específico por rota
 @router.post("/mensagens", response_model=MensagemResponse)
 def receber_mensagem(
     payload: MensagemInput,
@@ -33,18 +32,17 @@ def receber_mensagem(
     return MensagemResponse(id_job=id_job, status="pending")
 
 
-@router.post("/cock-ascii", response_model=CockAsciiResponse)
-def receber_cock_ascii(
-    payload: CockAsciiInput,
+@router.post("/example", response_model=ExampleResponse)
+def receber_example(
+    payload: ExampleInput,
     _: bool = Depends(verify_api_key),
 ):
     """
     Recebe mensagem do Postman, cria job, enfileira e retorna id_job.
     """
     id_job = create_job(payload.mensagem)
-    enqueue(id_job, processor="cock_ascii")
-    return CockAsciiResponse(id_job=id_job, status="pending")
-# END CHANGE: enfileirar jobs com processor específico por rota
+    enqueue(id_job, processor="example")
+    return ExampleResponse(id_job=id_job, status="pending")
 
 
 @router.get("/jobs/{id_job}", response_model=JobStatusResponse)
