@@ -21,4 +21,7 @@ MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "ai_agent_miraflores")
 # API
 API_KEY = os.getenv("API_KEY", "")
 
+# Caminho absoluto do .py do agente; vazio = usa padrão em AI_SRC no processor.
+AI_AGENT_SUBPROCESS_TIMEOUT = float(os.getenv("AI_AGENT_SUBPROCESS_TIMEOUT", "300"))
+
 # ==========================================

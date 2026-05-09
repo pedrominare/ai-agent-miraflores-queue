@@ -1,6 +1,8 @@
 # app/api/routes.py - Endpoints da API
 # ====================================
 
+from app.schemas.ai_agent import AiAgentInput
+from app.schemas.ai_agent import AiAgentResponse
 from app.schemas.example import ExampleInput, ExampleResponse
 from fastapi import APIRouter, HTTPException, Header, Depends
 
@@ -43,6 +45,19 @@ def receber_example(
     id_job = create_job(payload.mensagem)
     enqueue(id_job, processor="example")
     return ExampleResponse(id_job=id_job, status="pending")
+
+
+@router.post("/ai-agent", response_model=AiAgentResponse)
+def receber_ai_agent(
+    payload: AiAgentInput,
+    _: bool = Depends(verify_api_key),
+):
+    """
+    Recebe mensagem do Postman, cria job, enfileira e retorna id_job.
+    """
+    id_job = create_job(payload.mensagem)
+    enqueue(id_job, processor="ai-agent")
+    return AiAgentResponse(id_job=id_job, status="pending")
 
 
 @router.get("/jobs/{id_job}", response_model=JobStatusResponse)
